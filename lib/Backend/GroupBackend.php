@@ -32,6 +32,7 @@ use OCP\Group\Backend\ICountUsersBackend;
 use OCP\Group\Backend\IGroupDetailsBackend;
 use OCP\Group\Backend\IIsAdminBackend;
 use OCP\Group\Backend\ISearchableGroupBackend;
+use OCP\Group\Backend\INamedBackedn;
 use OCP\ILogger;
 use OCP\IUserManager;
 
@@ -91,7 +92,15 @@ final class GroupBackend extends ABackend implements
         $this->groupRepository = $groupRepository;
     }
 
-    /**
+	/**
+     * @inheritdoc
+     */
+	public function getBackendName(): string
+	{
+        return "User SQL";
+	}
+
+	/**
      * @inheritdoc
      */
     public function getGroups($search = "", $limit = null, $offset = null)
