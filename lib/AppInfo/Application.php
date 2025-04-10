@@ -4,6 +4,8 @@
  *
  * @copyright 2018 Marcin Łojewski <dev@mlojewski.me>
  * @author    Marcin Łojewski <dev@mlojewski.me>
+ * @copyright 2025 Claus-Justus Heine <himself@claus-justus-heine.de>
+ * @author    Claus-Justus Heine <himself@claus-justus-heine.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +24,20 @@
 namespace OCA\UserSQL\AppInfo;
 
 use OCP\AppFramework\App;
-use OCP\AppFramework\QueryException;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\IGroupManager;
+use OCP\IUserManager;
+
+use OCA\UserSQL\Backend;
 
 /**
  * The application bootstrap class.
  *
  * @author Marcin Łojewski <dev@mlojewski.me>
  */
-class Application extends App
+class Application extends App implements IBootstrap
 {
     /**
      * The class constructor.
@@ -42,26 +50,21 @@ class Application extends App
         parent::__construct("user_sql", $urlParams);
     }
 
-    /**
-     * Register the application backends
-     * if all necessary configuration is provided.
-     *
-     * @throws QueryException If the query container's could not be resolved
-     */
-    public function registerBackends()
-    {
-        $userBackend = $this->getContainer()->query(
-            '\OCA\UserSQL\Backend\UserBackend'
-        );
-        $groupBackend = $this->getContainer()->query(
-            '\OCA\UserSQL\Backend\GroupBackend'
-        );
+	/** {@inheritdoc} */
+	public function register(IRegistrationContext $context): void
+	{}
 
-        if ($userBackend->isConfigured()) {
-            \OC::$server->getUserManager()->registerBackend($userBackend);
-        }
-        if ($groupBackend->isConfigured()) {
-            \OC::$server->getGroupManager()->addBackend($groupBackend);
-        }
-    }
+	/** {@inheritdoc} */
+	public function boot(IBootContext $context): void
+	{
+		$context->injectFn(function(
+			IUserManager $userManager,
+			Backend\UserBackend $userBackend,
+			IGroupManager $groupManager,
+			Backend\GroupBackend $groupBackend,
+		) {
+			$userManager->registerBackend($userBackend);
+			$groupManager->addBackend($groupBackend);
+		});
+	}
 }
