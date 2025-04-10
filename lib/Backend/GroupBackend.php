@@ -3,6 +3,7 @@
  * Nextcloud - user_sql
  *
  * @copyright 2018 Marcin Łojewski <dev@mlojewski.me>
+ * @copyright 2022-2025 Claus-Justus Heine <himself@claus-justus-heine.de>
  * @author    Marcin Łojewski <dev@mlojewski.me>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -444,7 +445,7 @@ final class GroupBackend extends ABackend implements
     /**
      * @inheritdoc
      */
-    public function isAdmin(string $uid = null): bool
+    public function isAdmin(?string $uid = null): bool
     {
         $this->logger->debug(
             "Entering isAdmin($uid)", ["app" => $this->appName]
