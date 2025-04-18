@@ -113,9 +113,7 @@ class DataQuery
         try {
             $result = $this->connection->prepare($query, $limit, $offset);
         } catch (DBALException  $exception) {
-            $this->logger->logException(
-				$exception, [ 'message' => "Could not prepare the query: " . $query ]
-			);
+            $this->logger->error('Could not prepare the query: ' . $query, [ 'exception' => $exception ]);
             return false;
         }
 
@@ -130,9 +128,7 @@ class DataQuery
             return $result;
 
         } catch (DBALException  $exception) {
-            $this->logger->logException(
-				$exception, [ 'message' => "Could not execute the query: " . $query ]
-			);
+            $this->logger->error('Could not execute the query: ' . $query, [ 'exception' => $exception ]);
             return false;
         }
     }

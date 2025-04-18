@@ -144,9 +144,7 @@ class Properties implements \ArrayAccess
                     $params, array_values($reflection->getConstants())
                 );
             } catch (\ReflectionException $exception) {
-                $this->logger->logException(
-                    $exception, ["app" => $this->appName]
-                );
+                $this->logger->error('Unable to determine parameter names', [ 'exception'=> $exception ]);
             }
         }
 

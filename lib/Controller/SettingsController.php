@@ -384,7 +384,7 @@ class SettingsController extends Controller
 
             return $tables;
         } catch (Exception $e) {
-            $this->logger->logException($e);
+            $this->logger->error('Error during table autocompletion', [ 'exception' => $e ]);
             return [];
         }
     }
@@ -431,7 +431,7 @@ class SettingsController extends Controller
 
             return $columns;
         } catch (Exception $e) {
-            $this->logger->logException($e);
+            $this->logger->error('Error during column autocompletion', [ 'exception' => $e ]);
             return [];
         }
     }
