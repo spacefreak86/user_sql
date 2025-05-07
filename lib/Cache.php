@@ -61,7 +61,7 @@ class Cache
             $this->cache = $factory->createDistributed();
             $logger->debug("Distributed cache initiated.", ["app" => $AppName]);
         } else {
-            $logger->warning(
+            $logger->debug(
                 "There's no distributed cache available, fallback to null cache.",
                 ["app" => $AppName]
             );

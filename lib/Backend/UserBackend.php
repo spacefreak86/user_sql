@@ -345,9 +345,12 @@ final class UserBackend extends ABackend implements
         }
 
         if ($isCorrect !== true) {
-            $this->logger->info(
+            $this->logger->error(
                 "Invalid password attempt for user: $uid",
-                ["app" => $this->appName]
+                [
+					"app" => $this->appName,
+					'exception' => new \Exception('TRACE PROVIDER'),
+				]
             );
             return false;
         }
