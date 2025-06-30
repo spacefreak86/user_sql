@@ -5,6 +5,9 @@
  * @copyright 2018 Marcin Łojewski <dev@mlojewski.me>
  * @author    Marcin Łojewski <dev@mlojewski.me>
  *
+ * @copyright 2025 Claus-Justus Heine <himself@claus-justus-heine.de>
+ * @author    Claus-Justus Heine <himself@claus-justus-heine.de>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -39,7 +42,7 @@ class Cache
     /**
      * @var ICache The cache instance.
      */
-    private $cache;
+    private $cache = null;
 
     /**
      * The default constructor. Initiates the cache memory.
@@ -57,16 +60,20 @@ class Cache
 
         if ($useCache === App::FALSE_VALUE) {
             $this->cache = new NullCache();
-        } elseif ($factory->isAvailable()) {
-            $this->cache = $factory->createDistributed();
-            $logger->debug("Distributed cache initiated.", ["app" => $AppName]);
         } else {
-            $logger->debug(
-                "There's no distributed cache available, fallback to null cache.",
-                ["app" => $AppName]
-            );
-            $this->cache = new NullCache();
-        }
+			if ($factory->isAvailable()) {
+				$this->cache = $factory->createDistributed();
+			}
+			if ($this->cache === null || ($this->cache instanceof NullCache)) {
+				$logger->debug(
+					"There's no distributed cache available, fallback to capped in-memory cache.",
+					["app" => $AppName]
+				);
+				$this->cache = $factory->createInMemory(128);
+			} else {
+				$logger->debug("Distributed cache initiated.", ["app" => $AppName]);
+			}
+		}
     }
 
     /**
