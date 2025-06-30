@@ -87,6 +87,11 @@ class EmailSync implements IUserAction
             "Entering EmailSync#doAction($user->uid)", ["app" => $this->appName]
         );
 
+		// enforce lowercase
+		if (!empty($user->email)) {
+			$user->email = strtolower($user->email);
+		}
+
         $ncMail = $this->config->getUserValue(
             $user->uid, "settings", "email", ""
         );
@@ -117,7 +122,7 @@ class EmailSync implements IUserAction
 
             break;
         case App::SYNC_FORCE_SQL:
-            if (!empty($user->email) && $user->email !== $ncMail) {
+            if (!empty($user->email) && $user->email !== strtolower($ncMail)) {
                 $this->config->setUserValue(
                     $user->uid, "settings", "email", $user->email
                 );
